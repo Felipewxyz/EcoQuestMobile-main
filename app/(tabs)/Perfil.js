@@ -209,8 +209,11 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 15, color: "#555" },
   iconImage: { width: 70, height: 70, resizeMode: "contain" },
   shieldImage: {
-    width: 30,
-    height: 30,
-    marginLeft: 8,
+    width: 65,        // aumenta o tamanho se quiser
+    height: 90,
+    position: "absolute",
+    top: -15,           // ajusta conforme necessário
+    right: -8,         // ou left, depende do layout
+    zIndex: 10,       // garante que fique sobre os outros elementos
   }
 });
