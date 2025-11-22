@@ -14,32 +14,28 @@ export default function LojaEP({ navigation }) {
   };
   // Função chamada ao confirmar compra
   const confirmarCompra = async () => {
-    if (userEcoPoints >= selectedItem.price) {
-      const novoSaldo = userEcoPoints - selectedItem.price;
-      setUserEcoPoints(novoSaldo);
+    // Carregar saldo mais recente do AsyncStorage antes de fazer qualquer verificação
+    const saldoArmazenado = await AsyncStorage.getItem("ecopoints");
+    const saldoAtual = saldoArmazenado ? Number(saldoArmazenado) : 0;
 
-      // Atualiza no AsyncStorage para persistência
+    if (saldoAtual >= selectedItem.price) {
+      const novoSaldo = saldoAtual - selectedItem.price;
+
+      // Atualizar o saldo no AsyncStorage
       await AsyncStorage.setItem("ecopoints", String(novoSaldo));
+
+      // Atualizar o estado local para refletir a compra
+      setUserEcoPoints(novoSaldo);
 
       Alert.alert("Compra realizada!", `Você comprou ${selectedItem.name}.`);
     } else {
       Alert.alert("Saldo insuficiente", "Você não tem EP suficiente para esta compra.");
     }
+
+    // Fechar o modal no final da operação, independentemente de sucesso ou falha
     setModalVisible(false);
   };
 
-  useEffect(() => {
-    const carregarEcoPoints = async () => {
-      try {
-        const saldo = await AsyncStorage.getItem("ecopoints");
-        setUserEcoPoints(saldo ? Number(saldo) : 0);
-      } catch (error) {
-        console.log("Erro ao carregar EcoPoints:", error);
-      }
-    };
-
-    carregarEcoPoints();
-  }, []);
   // Estado para o tempo restante em segundos
   const [timeLeft, setTimeLeft] = useState(5 * 24 * 60 * 60); // 5 dias em segundos
 
