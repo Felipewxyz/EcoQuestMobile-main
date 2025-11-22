@@ -1,57 +1,169 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
+import { useState } from "react";
 
-export default function Insignias() {
+function SequenciaInsignias({ dias, imagens, corFundo, onSelect, selected, bloqueado }) {
   return (
-    <View style={styles.container}>
-      {/* Sequência de 100 dias */}
-      <Text style={styles.title}>Sequência de 100 dias</Text>
-      <View style={styles.blockContainer}>
-        <View style={styles.grayBlock} />
-        <View style={styles.grayBlock} />
-        <View style={styles.grayBlock} />
+    <View style={styles.sectionContainer}>
+      <View style={[styles.titleBox, { backgroundColor: corFundo }]}>
+        <Text style={styles.titleText}>Sequência de {dias} dias</Text>
       </View>
 
-      {/* Sequência de 200 dias */}
-      <Text style={styles.title}>Sequência de 200 dias</Text>
       <View style={styles.blockContainer}>
-        <View style={styles.grayBlock} />
-        <View style={styles.grayBlock} />
-        <View style={styles.grayBlock} />
-      </View>
-
-      {/* Sequência de 300 dias */}
-      <Text style={styles.title}>Sequência de 300 dias</Text>
-      <View style={styles.blockContainer}>
-        <View style={styles.grayBlock} />
-        <View style={styles.grayBlock} />
-        <View style={styles.grayBlock} />
+        {imagens.map((imagem, index) => {
+          const isSelected = selected === index;
+          return (
+            <TouchableOpacity
+              key={index}
+              activeOpacity={bloqueado ? 1 : 0.7} // não clicável se bloqueado
+              onPress={() => !bloqueado && onSelect(index)}
+              style={{ marginTop: isSelected ? -10 : 0 }} // sobe menos (-10)
+            >
+              <Image
+                source={imagem}
+                style={[
+                  styles.insigniaImage,
+                  bloqueado && { opacity: 0.5 } // visual de bloqueado
+                ]}
+              />
+            </TouchableOpacity>
+          );
+        })}
       </View>
     </View>
   );
 }
 
+export default function Insignias() {
+  const [selectedIndex, setSelectedIndex] = useState(null); // apenas 1 imagem selecionada
+
+  return (
+    <ScrollView contentContainerStyle={[styles.container, { paddingTop: 120 }]}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Insígnias</Text>
+      </View>
+
+      {/* 100 dias */}
+      <SequenciaInsignias
+        dias={100}
+        imagens={[
+          require("../../assets/images/insignia1.png"),
+          require("../../assets/images/insignia2.png"),
+          require("../../assets/images/insignia3.png"),
+        ]}
+        corFundo="#c49473"
+        onSelect={(index) => setSelectedIndex(`100-${index}`)}
+        selected={selectedIndex === '100-0' ? 0 : selectedIndex === '100-1' ? 1 : selectedIndex === '100-2' ? 2 : null}
+        bloqueado={false}
+      />
+
+      {/* 200 dias */}
+      <SequenciaInsignias
+        dias={200}
+        imagens={[
+          require("../../assets/images/insignia4.png"),
+          require("../../assets/images/insignia5.png"),
+          require("../../assets/images/insignia6.png"),
+        ]}
+        corFundo="#83a648"
+        onSelect={(index) => setSelectedIndex(`200-${index}`)}
+        selected={selectedIndex === '200-0' ? 0 : selectedIndex === '200-1' ? 1 : selectedIndex === '200-2' ? 2 : null}
+        bloqueado={false}
+      />
+
+      {/* 300 dias */}
+      <SequenciaInsignias
+        dias={300}
+        imagens={[
+          require("../../assets/images/insignia7.png"),
+          require("../../assets/images/insignia8.png"),
+          require("../../assets/images/insignia9.png"),
+        ]}
+        corFundo="#156499"
+        onSelect={(index) => setSelectedIndex(`300-${index}`)}
+        selected={null}  // nenhuma selecionável
+        bloqueado={true} // bloqueadas
+      />
+
+      <TouchableOpacity style={styles.button}>
+        <Text style={styles.buttonText}>Selecionar</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
+}
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: "#FFFFFF",
-    padding: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    backgroundColor: "#F5F5F5",
+    alignItems: "center",
   },
-  title: {
-    fontSize: 24,
+
+  /* TOPO */
+  header: {
+    position: "absolute",
+    top: -60,
+    left: 0,
+    right: 0,
+    height: 150,
+    backgroundColor: "#0E4668",
+    borderBottomLeftRadius: 40,   // <-- reduzido
+    borderBottomRightRadius: 40,  // <-- reduzido
+    alignItems: "center",
+    justifyContent: "flex-end",
+    paddingBottom: 20,
+    zIndex: 10,
+  },
+
+  headerText: {
+    fontSize: 34,
+    color: "#FFFFFF",
     fontWeight: "bold",
-    color: "#000000",
-    marginTop: 20,
-    marginBottom: 10,
   },
+
+  /* Seções */
+  sectionContainer: {
+    width: "100%",
+    marginBottom: 35,
+    alignItems: "center",
+  },
+  titleBox: {
+    paddingVertical: 8,
+    paddingHorizontal: 25,
+    borderRadius: 25,
+    marginBottom: 15,
+  },
+  titleText: {
+    fontSize: 20,
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+
   blockContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 10,
   },
-  grayBlock: {
-    width: 80,
-    height: 80,
-    backgroundColor: "#C0C0C0",
-    borderRadius: 10,
+
+  insigniaImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 15,
+    marginHorizontal: 10,
+  },
+
+  /* Botão */
+  button: {
+    backgroundColor: "#0E4668",
+    paddingVertical: 15,
+    paddingHorizontal: 50,
+    borderRadius: 30,
+    marginTop: 10,
+    marginBottom: 40,
+  },
+  buttonText: {
+    color: "#FFF",
+    fontSize: 18,
+    fontWeight: "bold",
   },
 });

@@ -153,7 +153,7 @@ export default function Perfil() {
               style={styles.iconImage}
             />
             <View style={styles.statTextBox}>
-              <Text style={styles.statNumber}>397</Text>
+              <Text style={styles.statNumber}>211</Text>
               <Text style={styles.statLabel}>máx. de dias seguidos</Text>
             </View>
           </View>
