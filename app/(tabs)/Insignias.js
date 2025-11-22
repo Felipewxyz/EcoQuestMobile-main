@@ -1,5 +1,6 @@
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
 import { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
 
 function SequenciaInsignias({ dias, imagens, corFundo, onSelect, selected, bloqueado }) {
   return (
@@ -35,6 +36,36 @@ function SequenciaInsignias({ dias, imagens, corFundo, onSelect, selected, bloqu
 
 export default function Insignias() {
   const [selectedIndex, setSelectedIndex] = useState(null); // apenas 1 imagem selecionada
+  const navigation = useNavigation();
+
+  // Função para enviar imagem selecionada para a página de perfil
+  const enviarParaPerfil = () => {
+    if (selectedIndex) {
+      const [categoria, idx] = selectedIndex.split("-");
+      let selectedImage;
+
+      if (categoria === "100") {
+        const imagens = [
+          require("../../assets/images/insignia1.png"),
+          require("../../assets/images/insignia2.png"),
+          require("../../assets/images/insignia3.png"),
+        ];
+        selectedImage = imagens[idx];
+      } else if (categoria === "200") {
+        const imagens = [
+          require("../../assets/images/insignia4.png"),
+          require("../../assets/images/insignia5.png"),
+          require("../../assets/images/insignia6.png"),
+        ];
+        selectedImage = imagens[idx];
+      }
+
+      // Navega para a página de perfil passando a imagem selecionada
+      navigation.navigate("Perfil", { shieldImage: selectedImage });
+    } else {
+      alert("Selecione uma insígnia primeiro!");
+    }
+  };
 
   return (
     <ScrollView contentContainerStyle={[styles.container, { paddingTop: 120 }]}>
@@ -84,7 +115,7 @@ export default function Insignias() {
         bloqueado={true} // bloqueadas
       />
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={enviarParaPerfil}>
         <Text style={styles.buttonText}>Selecionar</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -107,8 +138,8 @@ const styles = StyleSheet.create({
     right: 0,
     height: 150,
     backgroundColor: "#0E4668",
-    borderBottomLeftRadius: 40,   // <-- reduzido
-    borderBottomRightRadius: 40,  // <-- reduzido
+    borderBottomLeftRadius: 40,
+    borderBottomRightRadius: 40,
     alignItems: "center",
     justifyContent: "flex-end",
     paddingBottom: 20,

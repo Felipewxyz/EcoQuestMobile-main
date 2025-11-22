@@ -11,6 +11,7 @@ import {
   Text,
   View,
 } from "react-native";
+import { useRoute } from "@react-navigation/native";
 
 export default function Perfil() {
   const router = useRouter();
@@ -19,6 +20,8 @@ export default function Perfil() {
   const [userInfo, setUserInfo] = useState({ nome: "", usuario: "" });
   const [ecoPoints, setEcoPoints] = useState(0);
   const [floraCoins, setFloraCoins] = useState(0);
+  const route = useRoute();
+  const { shieldImage } = route.params || {}; // garante que não seja undefined
 
   useFocusEffect(
     useCallback(() => {
@@ -130,17 +133,14 @@ export default function Perfil() {
             {userInfo.usuario ? `@${userInfo.usuario}` : "@usuario"}
           </Text>
 
-          <View style={styles.levelRow}>
-            <View style={styles.levelContainer}>
-              <Text style={styles.levelText}>Level 162</Text>
-            </View>
-            <MaterialCommunityIcons
-              name="shield"
-              size={30}
-              color="#E0B94B"
-              style={{ marginLeft: 8 }}
+          {/* Substituindo ícone por imagem recebida via props */}
+          {shieldImage && (
+            <Image
+              source={shieldImage} // aqui será passado da outra página
+              style={styles.shieldImage}
+              resizeMode="contain"
             />
-          </View>
+          )}
         </View>
       </View>
       {/* 🔹 Parte branca com estatísticas */}
@@ -197,7 +197,7 @@ const styles = StyleSheet.create({
   frameOutside: { position: "absolute", width: 240, height: 240, top: -40, left: -22, zIndex: 3 },
   infoBox: { flex: 1, justifyContent: "center" },
   name: { fontSize: 22, fontWeight: "bold", color: "#000" },
-  username: { fontSize: 14, color: "#333", marginBottom: 5 },
+  username: { fontSize: 16, color: "#555", marginBottom: 5 },
   levelRow: { flexDirection: "row", alignItems: "center" },
   levelContainer: { backgroundColor: "#FFFFFF", borderRadius: 6, paddingHorizontal: 8, paddingVertical: 2 },
   levelText: { fontSize: 12, fontWeight: "600" },
@@ -207,5 +207,10 @@ const styles = StyleSheet.create({
   statTextBox: { marginLeft: 8, justifyContent: "center" },
   statNumber: { fontSize: 34, fontWeight: "bold", color: "#000" },
   statLabel: { fontSize: 15, color: "#555" },
-  iconImage: { width: 70, height: 70, resizeMode: "contain" }
+  iconImage: { width: 70, height: 70, resizeMode: "contain" },
+  shieldImage: {
+    width: 30,
+    height: 30,
+    marginLeft: 8,
+  }
 });
