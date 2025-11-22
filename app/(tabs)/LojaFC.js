@@ -1,9 +1,48 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Modal, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import React, { useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LojaFC({ navigation }) {
   const router = useRouter();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null); // guarda o item selecionado
+  const [userFloraCoins, setUserFloraCoins] = useState(500); // exemplo, pegar do AsyncStorage ou props
+
+  // Função chamada ao clicar no botão comprar
+  const handleComprar = (item) => {
+    setSelectedItem(item);
+    setModalVisible(true);
+  };
+
+  // Função chamada ao confirmar compra
+  const confirmarCompra = async () => {
+    if (userFloraCoins >= selectedItem.price) {
+      const novoSaldo = userFloraCoins - selectedItem.price;
+      setUserFloraCoins(novoSaldo);
+
+      // Atualiza no AsyncStorage para persistência
+      await AsyncStorage.setItem("floracoins", String(novoSaldo));
+
+      Alert.alert("Compra realizada!", `Você comprou ${selectedItem.name}.`);
+    } else {
+      Alert.alert("Saldo insuficiente", "Você não tem FC suficiente para esta compra.");
+    }
+    setModalVisible(false);
+  };
+
+  useEffect(() => {
+    const carregarFloraCoins = async () => {
+      try {
+        const saldo = await AsyncStorage.getItem("floracoins");
+        setUserFloraCoins(saldo ? Number(saldo) : 0);
+      } catch (error) {
+        console.log("Erro ao carregar FloraCoins:", error);
+      }
+    };
+
+    carregarFloraCoins();
+  }, []);
 
   // Estado para o tempo restante em segundos
   const [timeLeft, setTimeLeft] = useState(5 * 24 * 60 * 60); // 5 dias em segundos
@@ -23,7 +62,7 @@ export default function LojaFC({ navigation }) {
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
 
-    return `${d}d ${h.toString().padStart(2,'0')}h ${m.toString().padStart(2,'0')}m ${s.toString().padStart(2,'0')}s`;
+    return `${d}d ${h.toString().padStart(2, '0')}h ${m.toString().padStart(2, '0')}m ${s.toString().padStart(2, '0')}s`;
   };
 
 
@@ -85,7 +124,7 @@ export default function LojaFC({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>DE</Text>
               <View style={styles.oldPriceBox}>
-                <Text style={styles.oldPriceNumber}>105</Text>
+                <Text style={styles.oldPriceNumber}>50</Text>
                 <Text style={styles.oldEP}>FC</Text>
               </View>
             </View>
@@ -94,7 +133,7 @@ export default function LojaFC({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>POR</Text>
               <View style={styles.newPriceBox}>
-                <Text style={styles.newPriceNumber}>47</Text>
+                <Text style={styles.newPriceNumber}>35</Text>
                 <Text style={styles.newEP}>FC</Text>
               </View>
             </View>
@@ -108,7 +147,12 @@ export default function LojaFC({ navigation }) {
         />
       </View>
 
-      <TouchableOpacity style={styles.buyButton}>
+      <TouchableOpacity
+        style={styles.buyButton}
+        onPress={() =>
+          handleComprar({ name: "Banner Especial de Natal", price: 35 })
+        }
+      >
         <Text style={styles.buyButtonText}>COMPRAR</Text>
       </TouchableOpacity>
       {/* Banner 2 */}
@@ -121,7 +165,7 @@ export default function LojaFC({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>DE</Text>
               <View style={styles.oldPriceBox}>
-                <Text style={styles.oldPriceNumber}>79</Text>
+                <Text style={styles.oldPriceNumber}>40</Text>
                 <Text style={styles.oldEP}>FC</Text>
               </View>
             </View>
@@ -129,7 +173,7 @@ export default function LojaFC({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>POR</Text>
               <View style={styles.newPriceBox}>
-                <Text style={styles.newPriceNumber}>26</Text>
+                <Text style={styles.newPriceNumber}>20</Text>
                 <Text style={styles.newEP}>FC</Text>
               </View>
             </View>
@@ -143,7 +187,12 @@ export default function LojaFC({ navigation }) {
         />
       </View>
 
-      <TouchableOpacity style={styles.buyButton}>
+      <TouchableOpacity
+        style={styles.buyButton}
+        onPress={() =>
+          handleComprar({ name: "Banner de Bandeira (BR)", price: 20 })
+        }
+      >
         <Text style={styles.buyButtonText}>COMPRAR</Text>
       </TouchableOpacity>
       {/* --------------------  SEÇÃO DE MOLDURAS -------------------- */}
@@ -159,7 +208,7 @@ export default function LojaFC({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>DE</Text>
               <View style={styles.oldPriceBox}>
-                <Text style={styles.oldPriceNumber}>120</Text>
+                <Text style={styles.oldPriceNumber}>60</Text>
                 <Text style={styles.oldEP}>FC</Text>
               </View>
             </View>
@@ -168,7 +217,7 @@ export default function LojaFC({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>POR</Text>
               <View style={styles.newPriceBox}>
-                <Text style={styles.newPriceNumber}>79</Text>
+                <Text style={styles.newPriceNumber}>45</Text>
                 <Text style={styles.newEP}>FC</Text>
               </View>
             </View>
@@ -189,10 +238,57 @@ export default function LojaFC({ navigation }) {
           />
         </View>
       </View>
-      <TouchableOpacity style={styles.buyButton}>
+      <TouchableOpacity
+        style={styles.buyButton}
+        onPress={() =>
+          handleComprar({ name: "Moldura Especial de Natal", price: 45 })
+        }
+      >
         <Text style={styles.buyButtonText}>COMPRAR</Text>
       </TouchableOpacity>
 
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <View style={{
+            width: '80%',
+            backgroundColor: '#fff',
+            borderRadius: 20,
+            padding: 20,
+            alignItems: 'center'
+          }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>
+              Confirmar compra
+            </Text>
+            <Text style={{ fontSize: 16, marginBottom: 20 }}>
+              {selectedItem?.name} por {selectedItem?.price} FC
+            </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+              <TouchableOpacity
+                style={{ flex: 1, marginRight: 10, padding: 10, backgroundColor: '#ccc', borderRadius: 10 }}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flex: 1, marginLeft: 10, padding: 10, backgroundColor: '#53985b', borderRadius: 10 }}
+                onPress={confirmarCompra}
+              >
+                <Text style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>Confirmar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
