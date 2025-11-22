@@ -1,10 +1,45 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, Modal, Alert } from "react-native";
 import { useRouter } from "expo-router";
 import React, { useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function LojaEP({ navigation }) {
   const router = useRouter();
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [userEcoPoints, setUserEcoPoints] = useState(null);
+  const handleComprar = (item) => {
+    setSelectedItem(item);
+    setModalVisible(true);
+  };
+  // Função chamada ao confirmar compra
+  const confirmarCompra = async () => {
+    if (userEcoPoints >= selectedItem.price) {
+      const novoSaldo = userEcoPoints - selectedItem.price;
+      setUserEcoPoints(novoSaldo);
 
+      // Atualiza no AsyncStorage para persistência
+      await AsyncStorage.setItem("ecopoints", String(novoSaldo));
+
+      Alert.alert("Compra realizada!", `Você comprou ${selectedItem.name}.`);
+    } else {
+      Alert.alert("Saldo insuficiente", "Você não tem EP suficiente para esta compra.");
+    }
+    setModalVisible(false);
+  };
+
+  useEffect(() => {
+    const carregarEcoPoints = async () => {
+      try {
+        const saldo = await AsyncStorage.getItem("ecopoints");
+        setUserEcoPoints(saldo ? Number(saldo) : 0);
+      } catch (error) {
+        console.log("Erro ao carregar EcoPoints:", error);
+      }
+    };
+
+    carregarEcoPoints();
+  }, []);
   // Estado para o tempo restante em segundos
   const [timeLeft, setTimeLeft] = useState(5 * 24 * 60 * 60); // 5 dias em segundos
 
@@ -80,7 +115,7 @@ export default function LojaEP({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>DE</Text>
               <View style={styles.oldPriceBox}>
-                <Text style={styles.oldPriceNumber}>44</Text>
+                <Text style={styles.oldPriceNumber}>45</Text>
                 <Text style={styles.oldEP}>EP</Text>
               </View>
             </View>
@@ -88,7 +123,7 @@ export default function LojaEP({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>POR</Text>
               <View style={styles.newPriceBox}>
-                <Text style={styles.newPriceNumber}>26</Text>
+                <Text style={styles.newPriceNumber}>40</Text>
                 <Text style={styles.newEP}>EP</Text>
               </View>
             </View>
@@ -101,7 +136,12 @@ export default function LojaEP({ navigation }) {
         />
       </View>
 
-      <TouchableOpacity style={styles.buyButton}>
+      <TouchableOpacity
+        style={styles.buyButton}
+        onPress={() =>
+          handleComprar({ name: "Banner Comum de Natal", price: 40 })
+        }
+      >
         <Text style={styles.buyButtonText}>COMPRAR</Text>
       </TouchableOpacity>
       {/* Banner 2 – Cor Sólida */}
@@ -115,7 +155,7 @@ export default function LojaEP({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>DE</Text>
               <View style={styles.oldPriceBox}>
-                <Text style={styles.oldPriceNumber}>35</Text>
+                <Text style={styles.oldPriceNumber}>30</Text>
                 <Text style={styles.oldEP}>EP</Text>
               </View>
             </View>
@@ -123,7 +163,7 @@ export default function LojaEP({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>POR</Text>
               <View style={styles.newPriceBox}>
-                <Text style={styles.newPriceNumber}>19</Text>
+                <Text style={styles.newPriceNumber}>15</Text>
                 <Text style={styles.newEP}>EP</Text>
               </View>
             </View>
@@ -136,7 +176,12 @@ export default function LojaEP({ navigation }) {
         />
       </View>
 
-      <TouchableOpacity style={styles.buyButton}>
+      <TouchableOpacity
+        style={styles.buyButton}
+        onPress={() =>
+          handleComprar({ name: "Banner com Textura", price: 15 })
+        }
+      >
         <Text style={styles.buyButtonText}>COMPRAR</Text>
       </TouchableOpacity>
       {/* Seção de Molduras de Perfil */}
@@ -151,7 +196,7 @@ export default function LojaEP({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>DE</Text>
               <View style={styles.oldPriceBox}>
-                <Text style={styles.oldPriceNumber}>63</Text>
+                <Text style={styles.oldPriceNumber}>60</Text>
                 <Text style={styles.oldEP}>EP</Text>
               </View>
             </View>
@@ -159,7 +204,7 @@ export default function LojaEP({ navigation }) {
             <View style={styles.priceRow}>
               <Text style={styles.priceLabel}>POR</Text>
               <View style={styles.newPriceBox}>
-                <Text style={styles.newPriceNumber}>48</Text>
+                <Text style={styles.newPriceNumber}>50</Text>
                 <Text style={styles.newEP}>EP</Text>
               </View>
             </View>
@@ -178,10 +223,57 @@ export default function LojaEP({ navigation }) {
           />
         </View>
       </View>
-      <TouchableOpacity style={styles.buyButton}>
+      <TouchableOpacity
+        style={styles.buyButton}
+        onPress={() =>
+          handleComprar({ name: "Moldura de Coroa Rosa", price: 50 })
+        }
+      >
         <Text style={styles.buyButtonText}>COMPRAR</Text>
       </TouchableOpacity>
 
+      <Modal
+        visible={modalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={{
+          flex: 1,
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+          <View style={{
+            width: '80%',
+            backgroundColor: '#fff',
+            borderRadius: 20,
+            padding: 20,
+            alignItems: 'center'
+          }}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 10 }}>
+              Confirmar compra
+            </Text>
+            <Text style={{ fontSize: 16, marginBottom: 20 }}>
+              {selectedItem?.name} por {selectedItem?.price} EP
+            </Text>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+              <TouchableOpacity
+                style={{ flex: 1, marginRight: 10, padding: 10, backgroundColor: '#ccc', borderRadius: 10 }}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{ flex: 1, marginLeft: 10, padding: 10, backgroundColor: '#53985b', borderRadius: 10 }}
+                onPress={confirmarCompra}
+              >
+                <Text style={{ textAlign: 'center', color: '#fff', fontWeight: 'bold' }}>Confirmar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
