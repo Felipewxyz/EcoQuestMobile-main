@@ -8,6 +8,16 @@ export default function LojaEP({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [userEcoPoints, setUserEcoPoints] = useState(null);
+  //Criar estados para controlar o modal
+  const [customAlertVisible, setCustomAlertVisible] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  //Função para mostrar o alert estilizado
+  const showCustomAlert = (title, message) => {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setCustomAlertVisible(true);
+  };
   const handleComprar = (item) => {
     setSelectedItem(item);
     setModalVisible(true);
@@ -27,9 +37,9 @@ export default function LojaEP({ navigation }) {
       // Atualizar o estado local para refletir a compra
       setUserEcoPoints(novoSaldo);
 
-      Alert.alert("Compra realizada!", `Você comprou ${selectedItem.name}.`);
+      showCustomAlert("Compra realizada!", `Você comprou ${selectedItem.name}.`);
     } else {
-      Alert.alert("Saldo insuficiente", "Você não tem EP suficiente para esta compra.");
+      showCustomAlert("Saldo insuficiente", "Você não tem EP suficiente para esta compra.");
     }
 
     // Fechar o modal no final da operação, independentemente de sucesso ou falha
@@ -270,6 +280,26 @@ export default function LojaEP({ navigation }) {
           </View>
         </View>
       </Modal>
+    {/*Pop up de saldo insuficiente ou compra realizada*/}
+      <Modal
+        transparent
+        animationType="fade"
+        visible={customAlertVisible}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.alertBox}>
+            <Text style={styles.alertTitle}>{alertTitle}</Text>
+            <Text style={styles.alertMessage}>{alertMessage}</Text>
+
+            <TouchableOpacity
+              style={styles.alertButton}
+              onPress={() => setCustomAlertVisible(false)}
+            >
+              <Text style={styles.alertButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
@@ -499,5 +529,39 @@ const styles = StyleSheet.create({
     color: "#d9534f", // vermelho suave para chamar atenção
     marginTop: 20,
     marginBottom: 10,
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  alertBox: {
+    width: "80%",
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 12,
+    elevation: 5,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  alertMessage: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  alertButton: {
+    backgroundColor: "#53985b",
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  alertButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    textAlign: "center",
   },
 });

@@ -97,29 +97,29 @@ export default function Home() {
   useEffect(() => {
     const limparProgresso = async () => {
       try {
-        // 🔄 Reseta progresso exibido nas Quests
+        // Reseta progresso exibido nas Quests
         await AsyncStorage.removeItem("completedPractices");
         await AsyncStorage.removeItem("completedThemes");
 
-        // 🔄 Reseta moedas
+        // Reseta moedas
         await AsyncStorage.setItem("ecopoints", "0");
         await AsyncStorage.setItem("floracoins", "0");
 
-        // 🔄 Reseta flags de recompensas (para barras darem recompensa novamente)
+        // Reseta flags de recompensas (para barras darem recompensa novamente)
         await AsyncStorage.setItem("rewardedComum", JSON.stringify([false, false, false]));
         await AsyncStorage.setItem("rewardedExtra", JSON.stringify([false, false, false]));
 
-        // 🔄 Reseta progresso das barras comuns
+        // Reseta progresso das barras comuns
         await AsyncStorage.setItem("pratica1", "0");
         await AsyncStorage.setItem("pratica2", "0");
         await AsyncStorage.setItem("pratica3", "0");
 
-        // 🔄 Reseta progresso das barras extra
+        // Reseta progresso das barras extra
         await AsyncStorage.setItem("extra1", "0");
         await AsyncStorage.setItem("extra2", "0");
         await AsyncStorage.setItem("extra3", "0");
 
-        console.log("🧼 App resetado — modo demonstração ativo");
+        console.log("App resetado — modo demonstração ativo");
       } catch (err) {
         console.log("Erro ao limpar progresso:", err);
       }
@@ -250,7 +250,6 @@ export default function Home() {
 
     verificarConclusao();
   }, [progresso]);
-  // 👉 ADICIONE AQUI ESTA FUNÇÃO 👇
   const handlePracticeComplete = async () => {
     try {
       const stored = await AsyncStorage.getItem("completedPractices");
@@ -259,9 +258,9 @@ export default function Home() {
       if (current < 2) {
         const newValue = current + 1;
         await AsyncStorage.setItem("completedPractices", String(newValue));
-        console.log("✅ Progresso salvo:", newValue);
+        console.log("Progresso salvo:", newValue);
       } else {
-        console.log("🟩 Já completou as 2 práticas!");
+        console.log("Já completou as 2 práticas!");
       }
     } catch (err) {
       console.log("Erro ao salvar progresso:", err);
@@ -278,7 +277,7 @@ export default function Home() {
         const valorFinal = totalCompletas >= 2 ? 2 : totalCompletas;
 
         await AsyncStorage.setItem("completedPractices", String(valorFinal));
-        console.log("🔥 Progresso de quests atualizado:", valorFinal);
+        console.log("Progresso de quests atualizado:", valorFinal);
       } catch (err) {
         console.log("Erro ao atualizar progresso de Quests:", err);
       }
@@ -301,7 +300,7 @@ export default function Home() {
         const valorFinal = temasCompletos >= 1 ? 1 : 0;
 
         await AsyncStorage.setItem("completedThemes", String(valorFinal));
-        console.log("🌿 Progresso de temas atualizado:", valorFinal);
+        console.log("Progresso de temas atualizado:", valorFinal);
       } catch (err) {
         console.log("Erro ao atualizar progresso de temas:", err);
       }
