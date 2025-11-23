@@ -8,7 +8,7 @@ export default function LojaEP({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [userEcoPoints, setUserEcoPoints] = useState(null);
-  //Criar estados para controlar o modal
+  //Estados para controlar o modal
   const [customAlertVisible, setCustomAlertVisible] = useState(false);
   const [alertTitle, setAlertTitle] = useState("");
   const [alertMessage, setAlertMessage] = useState("");

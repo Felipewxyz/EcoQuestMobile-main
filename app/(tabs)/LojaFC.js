@@ -8,6 +8,16 @@ export default function LojaFC({ navigation }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null); // guarda o item selecionado
   const [userFloraCoins, setUserFloraCoins] = useState(500); // exemplo, pegar do AsyncStorage ou props
+  //Estados para controlar o modal
+  const [customAlertVisible, setCustomAlertVisible] = useState(false);
+  const [alertTitle, setAlertTitle] = useState("");
+  const [alertMessage, setAlertMessage] = useState("");
+  //Função para mostrar o alert estilizado
+  const showCustomAlert = (title, message) => {
+    setAlertTitle(title);
+    setAlertMessage(message);
+    setCustomAlertVisible(true);
+  };
 
   // Função chamada ao clicar no botão comprar
   const handleComprar = (item) => {
@@ -24,9 +34,9 @@ export default function LojaFC({ navigation }) {
       // Atualiza no AsyncStorage para persistência
       await AsyncStorage.setItem("floracoins", String(novoSaldo));
 
-      Alert.alert("Compra realizada!", `Você comprou ${selectedItem.name}.`);
+      showCustomAlert("Compra realizada!", `Você comprou ${selectedItem.name}.`);
     } else {
-      Alert.alert("Saldo insuficiente", "Você não tem FC suficiente para esta compra.");
+      showCustomAlert("Saldo insuficiente", "Você não tem FC suficiente para esta compra.");
     }
     setModalVisible(false);
   };
@@ -289,13 +299,32 @@ export default function LojaFC({ navigation }) {
           </View>
         </View>
       </Modal>
+      {/*Pop up de saldo insuficiente ou compra realizada*/}
+      <Modal
+        transparent
+        animationType="fade"
+        visible={customAlertVisible}
+      >
+        <View style={styles.overlay}>
+          <View style={styles.alertBox}>
+            <Text style={styles.alertTitle}>{alertTitle}</Text>
+            <Text style={styles.alertMessage}>{alertMessage}</Text>
+
+            <TouchableOpacity
+              style={styles.alertButton}
+              onPress={() => setCustomAlertVisible(false)}
+            >
+              <Text style={styles.alertButtonText}>OK</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFFFF" },
-
   header: {
     width: "100%",
     backgroundColor: "#53985b",
@@ -308,19 +337,12 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-
   headerLeft: { flexDirection: "row", alignItems: "center" },
-
   iconSacola: { width: 35, height: 35, marginRight: 6, tintColor: "#FFF" },
-
   title: { fontSize: 26, fontWeight: "bold", color: "#FFFFFF" },
-
   headerButtons: { flexDirection: "row", alignItems: "center", gap: 12 },
-
   headerIcon: { width: 38, height: 38, opacity: 0.6 },
-
   /* ------------ SEÇÕES ------------ */
-
   sectionTitle: {
     fontSize: 26,
     fontWeight: "bold",
@@ -328,7 +350,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
-
   bannerRow: {
     width: "90%",
     flexDirection: "row",
@@ -336,29 +357,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 32,
   },
-
   bannerInfo: { width: "55%" },
-
   bannerName: {
     fontSize: 17,
     fontWeight: "bold",
     color: "#000",
     marginBottom: 6,
   },
-
   /* -------- PREÇOS -------- */
-
   priceColumn: { flexDirection: "column", gap: 4 },
-
   priceRow: { flexDirection: "row", alignItems: "center", gap: 6 },
-
   priceLabel: {
     fontSize: 14,
     fontWeight: "bold",
     color: "#555",
     width: 32,
   },
-
   oldPriceBox: {
     flexDirection: "row",
     backgroundColor: "#dcdcdc",
@@ -367,11 +381,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignItems: "center",
   },
-
   oldPriceNumber: { fontSize: 16, fontWeight: "bold", color: "#000" },
-
   oldEP: { fontSize: 10, fontWeight: "bold", marginLeft: 3 },
-
   newPriceBox: {
     flexDirection: "row",
     backgroundColor: "#2abf40",
@@ -380,23 +391,19 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     alignItems: "center",
   },
-
   newPriceNumber: { fontSize: 22, fontWeight: "bold", color: "#fff" },
-
   newEP: {
     fontSize: 12,
     fontWeight: "bold",
     color: "#fff",
     marginLeft: 4,
   },
-
   bannerImage: {
     width: 160,
     height: 120,
     borderRadius: 12,
     resizeMode: "cover",
   },
-
   molduraImage: {
     width: 140,
     height: 140,
@@ -411,14 +418,12 @@ const styles = StyleSheet.create({
     position: "relative",
     marginTop: 10,
   },
-
   molduraBase: {
     width: 190,
     height: 190,
     borderRadius: 12,
     resizeMode: "cover",
   },
-
   molduraFrame: {
     position: "absolute",
     width: 190,
@@ -434,7 +439,6 @@ const styles = StyleSheet.create({
     marginTop: -20,      // aproxima do item acima
     marginBottom: 25,    // espaçamento entre botões
   },
-
   buyButtonText: {
     color: "#fff",
     fontSize: 18,
@@ -448,5 +452,38 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 10,
   },
-
+  overlay: {
+    flex: 1,
+    backgroundColor: "rgba(0,0,0,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  alertBox: {
+    width: "80%",
+    backgroundColor: "#fff",
+    padding: 20,
+    borderRadius: 12,
+    elevation: 5,
+  },
+  alertTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  alertMessage: {
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  alertButton: {
+    backgroundColor: "#53985b",
+    paddingVertical: 12,
+    borderRadius: 8,
+  },
+  alertButtonText: {
+    color: "#fff",
+    fontSize: 16,
+    textAlign: "center",
+  },
 });

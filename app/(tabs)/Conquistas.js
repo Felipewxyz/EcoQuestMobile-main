@@ -179,7 +179,7 @@ export default function Conquistas() {
                   } else if (isLocked) {
                     return (
                       <Text style={[styles.modalSubtitle, styles.lockedText]}>
-                        ❌ Não foi dessa vez... mais sorte na próxima!
+                        Não foi dessa vez... mais sorte na próxima!
                       </Text>
                     );
                   } else {

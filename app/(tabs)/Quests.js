@@ -42,7 +42,7 @@ export default function Quests() {
     }, [])
   );
 
-  // 🔁 sempre que o usuário voltar pra tela, recarrega o progresso salvo
+  // sempre que o usuário voltar pra tela, recarrega o progresso salvo
   useFocusEffect(
     React.useCallback(() => {
       const loadProgress = async () => {
@@ -50,7 +50,7 @@ export default function Quests() {
           const stored = await AsyncStorage.getItem("completedPractices");
           const value = stored ? Number(stored) : 0;
           setCompletedPractices(value);
-          console.log("📗 Valor carregado do AsyncStorage:", value);
+          console.log("Valor carregado do AsyncStorage:", value);
         } catch (err) {
           console.log("Erro ao carregar progresso:", err);
         }
@@ -109,11 +109,11 @@ export default function Quests() {
   const titleParam = params?.title ? decodeURIComponent(String(params.title)) : undefined;
   const [headerMonthIndex, setHeaderMonthIndex] = useState(monthIndexParam ?? currentMonthIndex);
 
-  // Exemplo de progresso (pode vir do backend/local storage depois)
+  // Progresso
   const completedMonths = [0, 1, 2, 4, 5, 7, 8, 9];
   const lockedMonths = [3, 6, 10, 11];
 
-  // 🧠 Função que calcula quantos dias faltam pro mês acabar
+  // Função que calcula quantos dias faltam pro mês acabar
   function getRemainingDaysInMonth() {
     const today = new Date();
     const currentYear = today.getFullYear();
@@ -133,7 +133,7 @@ export default function Quests() {
     return () => clearInterval(interval);
   }, []);
 
-  // 🕓 Atualiza o mês automaticamente se virar
+  // Atualiza o mês automaticamente se virar
   useEffect(() => {
     const interval = setInterval(() => {
       const newMonth = new Date().getMonth();
@@ -175,7 +175,7 @@ export default function Quests() {
 
   const [dailyProgress, setDailyProgress] = useState({
     completed: 0,
-    total: totalDailyQuests * 10 // exemplo: cada quest vale 10 pontos
+    total: totalDailyQuests * 10 // cada quest vale 10 pontos
   });
 
   const isCurrent = headerMonthIndex === currentMonthIndex;
@@ -193,7 +193,7 @@ export default function Quests() {
 
   const progressPercent = Math.round((dailyProgress.completed / dailyProgress.total) * 100);
 
-  // 🔢 Texto dinâmico do contador
+  // Texto dinâmico do contador
   const remainingText =
     remainingDays === 1
       ? "Último dia do mês"
@@ -287,7 +287,7 @@ export default function Quests() {
           <>
             <Text style={styles.dailyTitle}>Quests Diárias</Text>
             <View style={styles.questsBox}>
-              {/* 🌿 trecho do JSX (substitua sua primeira quest por esse) */}
+              {/* trecho do JSX */}
               <View style={styles.questProgressContainer}>
                 <View style={styles.textRow}>
                   <Ionicons name="barbell-outline" size={28} color="#1E90FF" style={styles.icon} />
@@ -309,7 +309,7 @@ export default function Quests() {
                 <View style={styles.separator} />
               </View>
 
-              {/* 2️⃣ Segunda Quest */}
+              {/* Segunda Quest */}
               <View style={styles.questProgressContainer}>
                 <View style={styles.textRow}>
                   <Image
@@ -325,7 +325,7 @@ export default function Quests() {
                 <View style={styles.separator} />
               </View>
 
-              {/* 3️⃣ Terceira Quest */}
+              {/* Terceira Quest */}
               <View style={styles.questProgressContainer}>
                 <View style={styles.textRow}>
                   <Ionicons name="barbell-outline" size={28} color="#1E90FF" style={styles.icon} />
@@ -347,29 +347,29 @@ export default function Quests() {
           <View style={{ paddingHorizontal: 16, alignItems: "center" }}>
             {isPast && !isCompleted && !isLocked ? (
               <View style={styles.messageBox}>
-                <Text style={[styles.messageTitle, { color: "#E84545" }]}>🌿 Não desanime</Text>
+                <Text style={[styles.messageTitle, { color: "#E84545" }]}>Não desanime</Text>
                 <Text style={styles.messageDesc}>
                   O tempo passou, mas a natureza sempre dá novas chances. Continue cultivando bons hábitos!
                 </Text>
               </View>
             ) : isLocked && isPast ? (
               <View style={styles.messageBox}>
-                <Text style={[styles.messageTitle, { color: "#FF8C00" }]}>💪 Continue tentando</Text>
+                <Text style={[styles.messageTitle, { color: "#FF8C00" }]}>Continue tentando</Text>
                 <Text style={styles.messageDesc}>
                   Nem sempre conseguimos de primeira — o importante é continuar firme!
-                  Cada tentativa é um passo rumo a um planeta melhor 🌎
+                  Cada tentativa é um passo rumo a um planeta melhor
                 </Text>
               </View>
             ) : isFuture ? (
               <View style={styles.messageBox}>
-                <Text style={[styles.messageTitle, { color: "#1E90FF" }]}>🌱 Espere mais um pouco</Text>
+                <Text style={[styles.messageTitle, { color: "#1E90FF" }]}>Espere mais um pouco</Text>
                 <Text style={styles.messageDesc}>
                   O próximo desafio está germinando — prepare-se para ajudar a natureza em breve!
                 </Text>
               </View>
             ) : isCompleted ? (
               <View style={styles.messageBox}>
-                <Text style={[styles.messageTitle, { color: "#2E8B57" }]}>🌎 Parabéns!</Text>
+                <Text style={[styles.messageTitle, { color: "#2E8B57" }]}>Parabéns!</Text>
                 <Text style={styles.messageDesc}>
                   Você concluiu este desafio e ajudou o planeta — continue assim!
                 </Text>
