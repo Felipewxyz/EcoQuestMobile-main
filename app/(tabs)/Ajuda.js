@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
         marginBottom: 25,
     },
     title: {
-        fontSize: 30, // maior que "Conquistas"
+        fontSize: 30,
         fontWeight: "800",
         color: "#000",
         marginLeft: 10,
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#CCC",
         borderRadius: 8,
-        marginBottom: 10, // menos espaço entre caixas
+        marginBottom: 10,
         overflow: "hidden",
     },
     questionRow: {

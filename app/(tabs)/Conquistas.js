@@ -20,12 +20,10 @@ const screenWidth = Dimensions.get("window").width;
 export default function Conquistas() {
   const router = useRouter();
   const pathname = usePathname();
-
   const [year, setYear] = useState(2025);
   const animValue = useRef(new Animated.Value(0)).current;
   const [selectedImage, setSelectedImage] = useState(null);
-
-  // Lista de 12 imagens (mantive exatamente os nomes de arquivo)
+  // Lista de 12 imagens
   const imagesList = [
     { file: "AnoNovoPlanetaNovo.png", title: "Ano Novo, Planeta Novo", src: require("../../assets/images/AnoNovoPlanetaNovo.png"), resumo: "Seu novo ano planta sementes para um planeta renascido." },
     { file: "FoliaResponsavel.png", title: "Folia Responsável", src: require("../../assets/images/FoliaResponsavel.png"), resumo: "Sua folia deixa marcas na memória, não na Terra." },
@@ -42,11 +40,9 @@ export default function Conquistas() {
   ];
 
   const months = ["Jan.", "Fev.", "Mar.", "Abr.", "Mai.", "Jun.", "Jul.", "Ago.", "Set.", "Out.", "Nov.", "Dez."];
-
   // bloqueados agora: Abril(3), Julho(6), Dezembro(11)
   const lockedMonths = [3, 6, 11]; // Novembro removido
-
-  // animação do dígito (mantive seu comportamento)
+  // animação do dígito
   const animateYearChange = (newYear) => {
     Animated.sequence([
       Animated.timing(animValue, { toValue: 1, duration: 200, easing: Easing.out(Easing.ease), useNativeDriver: true }),
@@ -90,7 +86,6 @@ export default function Conquistas() {
             <View style={[styles.tabBar, isConquistas ? styles.tabBarActive : styles.tabBarInactive]} />
           </View>
         </View>
-
         {/* ano */}
         <View style={styles.yearContainer}>
           <TouchableOpacity onPress={handlePreviousYear} disabled={year === 2024}>
@@ -107,7 +102,6 @@ export default function Conquistas() {
           </TouchableOpacity>
         </View>
       </View>
-
       {/* conteúdo rolável com 12 imagens */}
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         <View style={styles.bottomContainer}>
@@ -134,7 +128,6 @@ export default function Conquistas() {
           </View>
         </View>
       </ScrollView>
-
       {/* modal com fechar + ver detalhes */}
       <Modal
         visible={!!selectedImage}
@@ -224,9 +217,7 @@ export default function Conquistas() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#FFFFFF" },
-
   headerContainer: { backgroundColor: "#1E90FF", paddingTop: 10, paddingHorizontal: 16, paddingBottom: 10 },
-
   tabButtonsContainer: { flexDirection: "row", justifyContent: "space-around", marginBottom: 10 },
   tabContainer: { flex: 1, alignItems: "center" },
   tabTouchable: { paddingVertical: 10, width: "100%", alignItems: "center" },
@@ -236,25 +227,19 @@ const styles = StyleSheet.create({
   tabBar: { height: 5, width: "90%", borderRadius: 3, marginTop: -1 },
   tabBarActive: { backgroundColor: "#FFFFFF", opacity: 1 },
   tabBarInactive: { backgroundColor: "#FFFFFF", opacity: 0.3 },
-
   yearContainer: { flexDirection: "row", alignItems: "center", justifyContent: "space-between", marginTop: 10, width: "70%", alignSelf: "center" },
   yearInnerContainer: { flexDirection: "row", alignItems: "flex-end", justifyContent: "center" },
   yearTextFixed: { color: "#FFFFFF", fontSize: 28, fontWeight: "900" },
   yearTextAnimated: { color: "#FFFFFF", fontSize: 28, fontWeight: "900", marginLeft: 2 },
-
   scrollContent: { alignItems: "center", paddingBottom: 20 },
   bottomContainer: { flex: 1, backgroundColor: "#FFFFFF", alignItems: "center", paddingTop: 20 },
-
   imagesContainer: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", width: "90%" },
   imageWrapper: { alignItems: "center", marginBottom: 14 },
   imageContainer: { position: "relative", borderRadius: 8, overflow: "hidden", width: screenWidth * 0.42 },
   imageItem: { width: "100%", height: 165, borderRadius: 8, resizeMode: "contain" },
-
   blurOverlay: { ...StyleSheet.absoluteFillObject, borderRadius: 8 },
   lockIcon: { position: "absolute", top: "50%", left: "50%", transform: [{ translateX: -25 }, { translateY: -25 }] },
-
   imageLabel: { marginTop: 6, fontSize: 16, color: "#000000", fontWeight: "bold" },
-
   modalBackground: { flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "rgba(0,0,0,0.5)" },
   modalBox: { backgroundColor: "#FFF", padding: 20, borderRadius: 16, alignItems: "center", width: "82%" },
   modalImage: { width: 120, height: 120, borderRadius: 8, marginBottom: 10, resizeMode: "contain" },
@@ -263,7 +248,6 @@ const styles = StyleSheet.create({
   modalSubtitle: { fontSize: 15, marginBottom: 14, textAlign: "center" },
   unlockedText: { color: "#1E90FF" },
   lockedText: { color: "#E84545" },
-
   modalButtonsRow: { flexDirection: "row", gap: 10 },
   modalButton: { paddingHorizontal: 14, paddingVertical: 10, borderRadius: 8, marginHorizontal: 6 },
 });
